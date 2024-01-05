@@ -48,18 +48,13 @@ export async function POST(request) {
     }
   }
 
-export async function PATCH(request) {
+export async function PUT(request) {
     await connectToMongoDB(); // Ensure the database connection is established
 
     try {
         const data = await request.json(); // Parse the request body
-        const institutionId = request.nextUrl.searchParams.get('id'); // Or extract ID from the URL in another way depending on your routing
 
-        if (!institutionId) {
-            throw new Error("Institution ID is required for updating.");
-        }
-
-        const institution = await Institution.findByIdAndUpdate(institutionId, data, { new: true, runValidators: true });
+        const institution = await Institution.findByIdAndUpdate(data._id, data, { new: true, runValidators: true });
 
         if (!institution) {
             return new NextResponse("Institution not found", { status: 404 });

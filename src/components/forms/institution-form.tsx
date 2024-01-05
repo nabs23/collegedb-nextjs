@@ -1,19 +1,34 @@
 "use client";
+import { useEffect } from "react";
 import { useForm, type FieldValues } from "react-hook-form";
 
-export default function InsititutionForm() {
+export default function InsititutionForm({ institutionData }: { institutionData: FieldValues | null }) {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
     reset,
-    setError
+    setError,
+    setValue
   } = useForm();
+
+  useEffect(() => {
+    if (institutionData) {
+      Object.keys(institutionData).forEach(key => {
+        setValue(key, institutionData[key]);
+      });
+    }
+  }, [institutionData, setValue]);
 
   const onSubmit = async (data: FieldValues) => {
   
+    const url = institutionData ? `/api/institutions/${institutionData.id}` : "/api/institutions";
+    const method = institutionData ? "PUT" : "POST";
+
+    console.log(data)
+    
     const response = await fetch("/api/institutions", {
-      method: "POST",
+      method,
       headers: {
         "Content-Type": "application/json",
       },
@@ -34,9 +49,9 @@ export default function InsititutionForm() {
         });
       }
     }
-    if (response.ok) {
-      reset()
-    }
+    // if (response.ok) {
+    //   reset()
+    // }
   };
   return (
     <form
@@ -222,7 +237,7 @@ export default function InsititutionForm() {
       </label>
 
       <button type="submit" disabled={isSubmitting} className="btn btn-primary">
-        Save Basic Info
+        {institutionData ? 'Update Info' : 'Save Basic Info'}
       </button>
     </form>
   );
