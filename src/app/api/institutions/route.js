@@ -16,6 +16,16 @@ export async function GET() {
 export async function POST(request) {
     await connectToMongoDB(); // Ensure the database connection is established
 
+    const existingInstitution = await Institution.findOne();
+
+    if (existingInstitution) {
+      // If an institution already exists, return an error response
+      return NextResponse.json(
+        { error: 'An institution already exists. Only one is allowed.' },
+        { status: 409 }
+      );
+    }
+
     const body = await request.json();
     
     // Create a new INSTITUTION instance with the body data

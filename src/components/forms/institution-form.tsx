@@ -21,7 +21,7 @@ export default function InsititutionForm() {
     })
     const responseData = await response.json()
     if (!response.ok) {
-      alert(responseData.message)
+      alert(responseData.error)
       return
     }
     if (responseData.errors) {
