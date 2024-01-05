@@ -22,11 +22,8 @@ export default function InsititutionForm({ institutionData }: { institutionData:
 
   const onSubmit = async (data: FieldValues) => {
   
-    const url = institutionData ? `/api/institutions/${institutionData.id}` : "/api/institutions";
+    // const url = institutionData ? `/api/institutions/${institutionData.id}` : "/api/institutions";
     const method = institutionData ? "PUT" : "POST";
-
-    console.log(data)
-    
     const response = await fetch("/api/institutions", {
       method,
       headers: {

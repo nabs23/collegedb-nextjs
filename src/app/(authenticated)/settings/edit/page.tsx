@@ -15,7 +15,7 @@ export default function EditSettings() {
             } catch (error) {
                 console.error("Failed to fetch institution data", error);
                 // Handle error appropriately in your application
-                router.push('/dashboard');
+                router.push('/settings');
             }
         }
 
