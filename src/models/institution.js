@@ -10,6 +10,7 @@ const institutionSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Institution name is required'],
+        unique: [true, 'Institution name already exists!'],
     },
     shortName: {
         type: String,
