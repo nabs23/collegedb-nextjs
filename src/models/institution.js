@@ -17,9 +17,10 @@ const institutionSchema = new mongoose.Schema({
         maxLength: 24,
         validate: {
             validator: function (v) {
-                return /^[a-zA-Z]+$/.test(v);
+                // Regex for only letters and punctuations, no numbers
+                return /^[^\d]*$/.test(v);
             },
-            message: props => `${props.value} should only contain letters!`
+            message: props => `${props.value} should not contain numbers!`
         },
     },
     address: {
