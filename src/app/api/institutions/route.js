@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import connectToMongoDB from "@/utils/dbConnection";
+import formatErrors from "@/utils/formatErrors";
 import Institution from "@/models/institution";
 
 export async function GET() {
@@ -27,24 +28,14 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    
-    // Create a new INSTITUTION instance with the body data
     const institution = new Institution(body);
-  
+    
     try {
-  
+      // Validates and saves the institution
       const savedInstiutution = await institution.save();
-  
-      return NextResponse.json(savedInstiutution, { status: 201 });
+      return NextResponse.json(savedInstiutution, { status: 201 });  
     } catch (error) {
-      // Mongoose validation errors will be in error.errors
-      const mongooseErrors = {};
-      if (error.errors) {
-        for (let key in error.errors) {
-          mongooseErrors[key] = error.errors[key].message;
-        }
-      }
-      return NextResponse.json({ errors: mongooseErrors });
+      return NextResponse(JSON.stringify({ errors: formatErrors(error), message: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
   }
 
@@ -63,14 +54,7 @@ export async function PUT(request) {
         return new NextResponse(JSON.stringify(institution), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
     } catch (error) {
-      // Mongoose validation errors will be in error.errors
-      const mongooseErrors = {};
-      if (error.errors) {
-        for (let key in error.errors) {
-          mongooseErrors[key] = error.errors[key].message;
-        }
-      }
-      return NextResponse.json({ errors: mongooseErrors });
+      return NextResponse(JSON.stringify({ errors: formatErrors(error), message: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
 }
 
@@ -90,7 +74,7 @@ export async function DELETE(request) {
             throw new Error("Unable to delete institution.");
         }
     
-        return new NextResponse("Institution deleted successfully!");
+        return new NextResponse(JSON.stringify({ message: "Institution deleted successfully!" }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
     } catch (error) {
         console.error("Deletion Error:", error); // Log the specific error
