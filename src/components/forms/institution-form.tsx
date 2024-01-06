@@ -1,27 +1,33 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, type FieldValues } from "react-hook-form";
 
-export default function InsititutionForm({ institutionData }: { institutionData: FieldValues | null }) {
+export default function InsititutionForm({
+  institutionData,
+}: {
+  institutionData: FieldValues | null;
+}) {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
     reset,
     setError,
-    setValue
+    setValue,
   } = useForm();
+
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (institutionData) {
-      Object.keys(institutionData).forEach(key => {
+      setIsEditing(true);
+      Object.keys(institutionData).forEach((key) => {
         setValue(key, institutionData[key]);
       });
     }
   }, [institutionData, setValue]);
 
   const onSubmit = async (data: FieldValues) => {
-  
     // const url = institutionData ? `/api/institutions/${institutionData.id}` : "/api/institutions";
     const method = institutionData ? "PUT" : "POST";
     const response = await fetch("/api/institutions", {
@@ -30,14 +36,14 @@ export default function InsititutionForm({ institutionData }: { institutionData:
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    })
-    const responseData = await response.json()
+    });
+    const responseData = await response.json();
     if (!response.ok) {
-      alert(responseData.error)
-      return
+      alert(responseData.error);
+      return;
     }
     if (responseData.errors) {
-      const errors = responseData.errors
+      const errors = responseData.errors;
       for (const key in errors) {
         // Use the key to set error for that specific field
         setError(key, {
@@ -169,7 +175,7 @@ export default function InsititutionForm({ institutionData }: { institutionData:
             pattern: {
               value: /^[0-9]*$/,
               message: "Phone should only contain numbers",
-            }
+            },
           })}
           className="input input-bordered w-full"
           type="text"
@@ -204,9 +210,13 @@ export default function InsititutionForm({ institutionData }: { institutionData:
 
       {/* Period Type */}
       <label className="form-control">
-        <select {...register("periodType", {
-          required: "Period Type is required",
-        })} className="select select-bordered">
+        <select
+          {...register("periodType", {
+            required: "Period Type is required",
+          })}
+          className="select select-bordered"
+          disabled={isEditing}
+        >
           <option value="">Select Period Type</option>
           <option value="Semestral">Semestral</option>
           <option value="Trimestral">Trimestral</option>
@@ -234,7 +244,7 @@ export default function InsititutionForm({ institutionData }: { institutionData:
       </label>
 
       <button type="submit" disabled={isSubmitting} className="btn btn-primary">
-        {institutionData ? 'Update Info' : 'Save Basic Info'}
+        {institutionData ? "Update Info" : "Save Basic Info"}
       </button>
     </form>
   );
