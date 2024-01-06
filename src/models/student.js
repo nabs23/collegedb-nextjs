@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const studentSchema = new mongoose.Schema({
-  fistName: String,
+  firstName: String,
   middleName: String,
   lastName: String,
   nameExtension: String,
@@ -58,10 +58,14 @@ const studentSchema = new mongoose.Schema({
         active: Boolean
     }
   ]
+}, {
+  timestamps: true,
+  toObject: { virtuals: true },
+  toJSON: { virtuals: true },
 });
 
 studentSchema.virtual("fullName").get(function () {
-  return `${this.fistName} ${this.middleName} ${this.lastName} ${this.nameExtension}`;
+  return `${this.firstName} ${this.middleName} ${this.lastName} ${this.nameExtension ? this.nameExtension : ''}`;
 })
 
 const StudentModel = mongoose.models.Student || mongoose.model("Student", studentSchema);

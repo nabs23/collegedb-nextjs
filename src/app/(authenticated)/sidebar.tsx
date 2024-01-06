@@ -108,7 +108,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       {/* <!-- Main content --> */}
 
       <div className={`flex-grow bg-gray-200 ${expanded ? "ml-64" : "ml-12"} relative`}>
-        <div className="px-4 h-[var(--navbar-height)] flex items-center bg-white fixed top-0 w-full">
+        <div className="px-4 h-[var(--navbar-height)] flex items-center bg-white fixed top-0 w-full z-20">
           <Breadcrumbs />
         </div>
         <div className="p-6 mt-[var(--navbar-height)]">
