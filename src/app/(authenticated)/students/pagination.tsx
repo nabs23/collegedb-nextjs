@@ -1,12 +1,20 @@
 'use client'
-import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 
-const Pagination = ({ totalPages, currentPage, onPageChange }: { totalPages: number; currentPage: number; onPageChange: (page: number) => void }) => {
+const Pagination = ({ totalPages, onPageChange }: { totalPages: number; onPageChange: (page: number) => void }) => {
+  const searchParams = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(searchParams.get("page") ? parseInt(searchParams.get("page") as string) : 1);
 
   const pageNumbers = useMemo(
     () => Array.from({ length: totalPages }, (_, i) => i + 1),
     [totalPages]
   );
+
+  const handleOnPageChange = (page: number) => {
+    setCurrentPage(page);
+    onPageChange(page);
+  }
 
   return (
     <div className="flex justify-between my-4">
@@ -16,7 +24,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }: { totalPages: num
             type="radio"
             name="options"
             aria-label="Previous"
-            onChange={() => onPageChange(currentPage - 1)}
+            onChange={() => handleOnPageChange(currentPage - 1)}
             disabled={currentPage === 1}
           />
         {pageNumbers.map((number) => (
@@ -27,7 +35,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }: { totalPages: num
             name="options"
             aria-label={number.toString()}
             checked={currentPage === number}
-            onChange={() => onPageChange(number)}
+            onChange={() => handleOnPageChange(number)}
           />
         ))}
          <input
@@ -35,7 +43,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }: { totalPages: num
             type="radio"
             name="options"
             aria-label="Next"
-            onChange={() => onPageChange(currentPage + 1)}
+            onChange={() => handleOnPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           />
       </div>
