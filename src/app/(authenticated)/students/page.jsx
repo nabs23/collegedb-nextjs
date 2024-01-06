@@ -1,9 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import Pagination from "./pagination";
 
 const PaginationComponent = ({ searchParams }) => {
-  console.log(searchParams);
   const router = useRouter();
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(searchParams.page || 1);
@@ -23,14 +23,9 @@ const PaginationComponent = ({ searchParams }) => {
     fetchItems();
   }, [currentPage, limit]);
 
-  // Generate page numbers
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
-
   const handleLimitChange = (event) => {
-    router.push(`/students?page=${currentPage}&limit=${event.target.value}`);
+    setCurrentPage(1);
+    router.push(`/students?page=1&limit=${event.target.value}`);
     setLimit(event.target.value);
   };
   const handlePageChange = (pageNumber) => {
@@ -41,58 +36,55 @@ const PaginationComponent = ({ searchParams }) => {
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Students</h1>
-      <form>
+      <form className="flex items-center space-x-3 my-3">
         <label htmlFor="limit">Limit:</label>
-        <select id="limit" value={limit} onChange={handleLimitChange}>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
+        <select
+          id="limit"
+          value={limit}
+          onChange={handleLimitChange}
+          className="select select-sm"
+        >
+          {[5, 10, 20, 50].map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
         </select>
       </form>
-      <div className="grid grid-cols-1 gap-4">
-        {items.map((item, index) => (
-          <div key={index} className="border p-4">
-            {/* Render your item data here */}
-            {item.fullName}
-            {/* Include other item fields as needed */}
-          </div>
-        ))}
-      </div>
-
-      <div className="flex justify-between my-4">
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-
-        <div>
-          {pageNumbers.map((number) => (
-            <button
-              key={number}
-              className={`px-3 py-1 mx-1 ${
-                currentPage === number
-                  ? "bg-blue-700 text-white"
-                  : "bg-blue-200"
-              } rounded hover:bg-blue-500`}
-              onClick={() => handlePageChange(number)}
-            >
-              {number}
-            </button>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Birthdate</th>
+            <th>Sex</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Province</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, index) => (
+            <tr key={index}>
+              <td>{item.fullName}</td>
+              <td>{item.email}</td>
+              <td>{item.phoneNumber}</td>
+              <td>{item.birthdate}</td>
+              <td>{item.sex}</td>
+              <td>{item.address}</td>
+              <td>{item.city}</td>
+              <td>{item.province}</td>
+            </tr>
           ))}
-        </div>
+        </tbody>
+      </table>
 
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

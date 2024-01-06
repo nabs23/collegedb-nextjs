@@ -65,7 +65,7 @@ const studentSchema = new mongoose.Schema({
 });
 
 studentSchema.virtual("fullName").get(function () {
-  return `${this.firstName} ${this.middleName} ${this.lastName} ${this.nameExtension ? this.nameExtension : ''}`;
+  return `${this.firstName} ${this.middleName} ${this.nameExtension ? this.lastName + ' ' + this.nameExtension : this.lastName}`;
 })
 
 const StudentModel = mongoose.models.Student || mongoose.model("Student", studentSchema);
